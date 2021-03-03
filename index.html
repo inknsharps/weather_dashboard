@@ -5,10 +5,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="./assets/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="./assets/style.css">
     <title>Weather Dashboard</title>
 </head>
 <body>
+    <nav class="navbar navbar-light bg-light">
+        <header>
+            <h1>Weather Dashboard</h1>
+        </header>
+    </nav>
+    <main class="d-flex">
+         <!-- Search bar column -->
+        <aside class="d-flex flex-column col-3">
+            <section>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="City or ZIP Code" aria-label="City or ZIP Code" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary submit-city" type="button" id="button-addon2">Search</button>
+                    </div>
+                </div>
+                <!-- Saved Cities Field -->
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <button class="btn btn-outline-secondary submit-saved-city" type="button" id="button-addon2">Atlanta</button>
+                    </li>
+                </ul>
+            </section>
+        </aside>
+        <!-- City info section -->
+        <article class="d-flex flex-wrap col-9">
+            <section class="col-12 selected-city">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Atlanta (03/02/21)</h5>
+                        <p>Temperature Here</p>
+                        <p>Wind Speed Here</p>
+                        <p>UV Index Here</p>
+                    </div>
+                </div>
+            </section>
+            <!-- 5 Day Forecast Section -->
+            <section class="d-flex col-12 flex-wrap">
+                <div class="col-12">
+                    <h3>5 Day Forecast</h3>
+                </div>
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">03/02/2021</h5>
+                        <p>Weather Image Here</p>
+                        <p>Temperature Here</p>
+                        <p>Humidity Here</p>
+                    </div>
+                </div>
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">03/02/2021</h5>
+                        <p>Weather Image Here</p>
+                        <p>Temperature Here</p>
+                        <p>Humidity Here</p>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
     <script src="assets/script.js"></script>
 </body>
-</html>
+</html> 
