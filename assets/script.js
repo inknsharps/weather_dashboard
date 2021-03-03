@@ -90,6 +90,5 @@ searchButtonEl.addEventListener("click", searchCity);
 
 // TO DO
 // Build delete search history functionality
-// Build elements and functionality for the main city
-// Build elements for the 5 day forecast (may require a different API grab)
+// Populate the built out weather and forecast elements with the weather API
 // Build out functionality for imperial and metric measurements??
