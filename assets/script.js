@@ -2,17 +2,59 @@
 let searchFieldEl = document.querySelector(".search-field");
 let searchButtonEl = document.querySelector(".submit-search");
 let searchHistoryEl = document.querySelector(".search-history");
+let currentWeatherEl = document.querySelector(".current-weather");
 
 // Function to build li elements for the search history
 function buildSearchHistory(city){
-    const li = document.createElement("li");
+    let li = document.createElement("li");
     li.className = "list-group-item";
-    const button = document.createElement("button");
+    let button = document.createElement("button");
     button.className = "btn btn-outline-secondary submit-saved-city";
     button.setAttribute("type", "button");
     button.textContent = city;
     li.appendChild(button);
     searchHistoryEl.appendChild(li);
+}
+
+// Function to build the 5 day forecast
+function buildForecast(){
+    let forecast = buildHTML("section", "d-flex col-12 flex-wrap forecast");
+    currentWeatherEl.appendChild(forecast);
+    let forecastHeader = buildHTML("div", "col-12");
+    forecast.appendChild(forecastHeader);
+    forecastHeader.appendChild(buildHTML("h4", "forecast-title", "5-Day Forecast:"));
+    for (let i = 0; i < 5; i++){
+        let forecastCard = buildHTML("div", "card");
+        forecastCard.setAttribute("style", "width: 15rem;");
+        forecast.appendChild(forecastCard);
+        forecastCard.appendChild(buildHTML("h5", "card-title", "Date"));
+        forecastCard.appendChild(buildHTML("p", "weather-img", "Weather Image"));
+        forecastCard.appendChild(buildHTML("p", "temperature", "Temperature"));
+        forecastCard.appendChild(buildHTML("p", "humidity", "Humidity"));
+    }
+}
+
+// Function to build current city weather data card
+function buildWeatherMain(){
+    let selectedCity = buildHTML("section", "col-12 selected-city");
+    currentWeatherEl.appendChild(selectedCity);
+    let card = buildHTML("div", "card");
+    selectedCity.appendChild(card);
+    let cardBody = buildHTML("div", "card-body");
+    card.appendChild(cardBody);
+    cardBody.appendChild(buildHTML("h3", "card-title", "Current City"));
+    cardBody.appendChild(buildHTML("p", "temperature", "Current Temp"));
+    cardBody.appendChild(buildHTML("p", "humidity", "Current Humidity"));
+    cardBody.appendChild(buildHTML("p", "windspeed", "Current Wind Speed"));
+    cardBody.appendChild(buildHTML("p", "UVindex", "Current UV Index"));
+}
+
+// Helper function to create HTML elements
+function buildHTML(tag, classes, text){
+    const element = document.createElement(tag);
+    element.className = classes;
+    element.textContent = text;
+    return element;
 }
 
 // Function to call the current weather data (currently in metric), with the argument for the city
@@ -39,6 +81,8 @@ function searchCity(){
     let searchValue = searchFieldEl.value;
     callWeather(searchValue);
     buildSearchHistory(searchValue);
+    buildWeatherMain();
+    buildForecast();
 }
 
 // Event Listener for the search button
