@@ -18,18 +18,23 @@ function buildSearchHistory(city){
 // Function to call the current weather data (currently in metric), with the argument for the city
 function callWeather(city){
     let calledWeatherData = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=704f3b5ee25c5694ae0db66afd13ab60&units=metric`
-    console.log(calledWeatherData);
     fetch(calledWeatherData)
         .then((response) => { 
-            return response.json();
+            if (response.ok === true){
+                return response.json();
+            } else {
+                alert("Error! Could not retrieve city data.");
+            }
         })
         .then((weatherData) => {
             console.log(weatherData);
-
+        })
+        .catch((error) => {
+            alert("Error! Could not connect to OpenWeatherMap API.");
         });
 }
 
-// Function to search for a city
+// Function to search for a city and add it to the search history
 function searchCity(){
     let searchValue = searchFieldEl.value;
     callWeather(searchValue);
@@ -38,3 +43,9 @@ function searchCity(){
 
 // Event Listener for the search button
 searchButtonEl.addEventListener("click", searchCity);
+
+// TO DO
+// Build delete search history functionality
+// Build elements and functionality for the main city
+// Build elements for the 5 day forecast (may require a different API grab)
+// Build out functionality for imperial and metric measurements??
