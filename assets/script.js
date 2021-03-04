@@ -130,7 +130,11 @@ async function callWeather(city){
 // Function to search for a city and add it to the search history
 async function searchCity(){
     let searchValue = searchFieldEl.value;
-    await callWeather(searchValue);
+    await callWeather(searchValue)
+        .catch(() => {
+            alert("Not a valid city in the OpenWeather API!");
+            return;
+        });
     buildSearchHistory(searchValue);
     buildWeatherMain();
     buildForecast();
@@ -149,7 +153,6 @@ function restoreHistory(){
     searchHistoryEl.innerHTML = JSON.parse(localStorage.getItem("searchHistoryElements"));
     let closeButton = document.querySelectorAll(".close");
     let cityButton = document.querySelectorAll(".submit-saved-city");
-    console.log(searchHistoryEl.childElementCount);
     for (let i = 0; i < searchHistoryEl.childElementCount; i++){
         cityButton[i].addEventListener("click", callHistory);
         closeButton[i].addEventListener("click", deleteHistory);
@@ -163,7 +166,7 @@ function storeCurrentCity(){
     console.log(localStorage);
 }
 
-// Function to reload save search history elements from localStorage
+// Async function to reload saved city weather elements from localStorage, then refreshes it with current data
 async function restoreCurrentCity(){
     currentWeatherEl.innerHTML = await JSON.parse(localStorage.getItem("currentWeatherElements"));
     let currentCityValue = currentWeatherEl.firstElementChild.firstElementChild.firstElementChild.firstElementChild.textContent
@@ -174,25 +177,20 @@ async function restoreCurrentCity(){
 }
 
 if (localStorage.searchHistoryElements === undefined && localStorage.currentWeatherElements === undefined){
-    console.log("meh");
+    console.log("Nothing in localStorage!");
 } else {
     restoreHistory();
     restoreCurrentCity();
 }
 
-// Event Listener for searching
+// Event Listener for searching, which replaces the current city data with what is searched
 searchButtonEl.addEventListener("click", ()=>{
     removeHTML(".current-weather");
     searchCity();
 });
-
-saveHistoryButtonEl.addEventListener("click", ()=>{
-    storeHistory();
-});
-
-saveCityButtonEl.addEventListener("click", ()=>{
-    storeCurrentCity();
-});
+// Event listeners for the navbar save history and current city buttons
+saveHistoryButtonEl.addEventListener("click", storeHistory);
+saveCityButtonEl.addEventListener("click", storeCurrentCity);
 
 // TO DO
 // Add UV index styling
