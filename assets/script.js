@@ -5,8 +5,7 @@ let searchHistoryEl = document.querySelector(".search-history");
 let currentWeatherEl = document.querySelector(".current-weather");
 
 // Declare variables for current weather and forecast data objects to be manipulated later
-let retrievedCityData;
-let retrievedForecastData;
+let requestedWeatherData;
 
 // Function to build li elements for the search history, with buttons for functionality
 function buildSearchHistory(city){
@@ -21,27 +20,27 @@ function buildSearchHistory(city){
     closeButton.setAttribute("type", "button");
     closeButton.innerHTML = "<span aria-hidden='true'>&times;</span>";
 
-
     li.appendChild(cityButton);
     li.appendChild(closeButton);
     searchHistoryEl.appendChild(li);
     cityButton.addEventListener("click", callHistory);
-    closeButton.addEventListener("click", deleteHistory)
+    closeButton.addEventListener("click", deleteHistory);
 }
 
-// Function for searching with the history
-function callHistory(){
-    let historyValue = this.textContent; // 'this' is currently the button that we generated
-    callWeather(historyValue);
-    callForecast(historyValue);
+// Function for calling weather data from items in the history
+async function callHistory(event){
+    event.stopPropagation();
+    let historyValue = event.target.textContent; // Since this is on a click event listener, we get city name from this
+    await callWeather(historyValue);
+    removeHTML(".current-weather");
     buildWeatherMain();
     buildForecast();
 }
 
 // Function to delete the generated li element in the history
 function deleteHistory(event){
+    event.stopPropagation();
     let cityLiEl = event.target;
-    console.log(cityLiEl.parentElement.parentElement);
     cityLiEl.parentElement.parentElement.remove();
 }
 
@@ -52,14 +51,19 @@ function buildForecast(){
     let forecastHeader = buildHTML("div", "col-12");
     forecast.appendChild(forecastHeader);
     forecastHeader.appendChild(buildHTML("h4", "forecast-title", "5-Day Forecast:"));
-    for (let i = 0; i < retrievedForecastData.list.length; i += 8){
+    for (let i = 0; i < 5; i++){
         let forecastCard = buildHTML("div", "card");
         forecastCard.setAttribute("style", "width: 15rem;");
         forecast.appendChild(forecastCard);
-        forecastCard.appendChild(buildHTML("h5", "card-title", retrievedForecastData.list[i].dt_txt));
-        forecastCard.appendChild(buildHTML("p", "weather-img", retrievedForecastData.list[i].weather[0].icon));
-        forecastCard.appendChild(buildHTML("p", "temperature", `Temperature: ${retrievedForecastData.list[i].main.temp} C`));
-        forecastCard.appendChild(buildHTML("p", "humidity", `Humidity: ${retrievedForecastData.list[i].main.humidity}%`));
+
+        // Convert the Unix timestamps in requestedWeatherData to YYYY-MM-DD
+        let forecastDateRaw = new Date(requestedWeatherData.dailyForecast[i].dt*1000);
+        let forecastDate = forecastDateRaw.toLocaleDateString("en-CA");
+
+        forecastCard.appendChild(buildHTML("h5", "card-title", forecastDate));
+        forecastCard.appendChild(buildHTML("p", "weather-img", requestedWeatherData.dailyForecast[i].weather.icon));
+        forecastCard.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.dailyForecast[i].temp.day} C`));
+        forecastCard.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.dailyForecast[i].humidity}%`));
     }
 }
 
@@ -72,15 +76,11 @@ function buildWeatherMain(){
     let cardBody = buildHTML("div", "card-body");
     card.appendChild(cardBody);
 
-    console.log(retrievedCityData)
-    let cityName = retrievedCityData.name
-    console.log(retrievedCityData)
-
-    cardBody.appendChild(buildHTML("h3", "card-title", cityName));
-    cardBody.appendChild(buildHTML("p", "temperature", `Temperature: ${Math.round(retrievedCityData.main.temp)} C`));
-    cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${retrievedCityData.main.humidity}%`));
-    cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${retrievedCityData.wind.speed}`));
-    cardBody.appendChild(buildHTML("p", "UVindex", "Current UV Index"));
+    cardBody.appendChild(buildHTML("h3", "card-title", `${requestedWeatherData.cityName}`));
+    cardBody.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.currentTemp}`));
+    cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.currentHumidity}`));
+    cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${requestedWeatherData.currentWind}`));
+    cardBody.appendChild(buildHTML("p", "UVindex", `UV Index: ${requestedWeatherData.currentUVI}`));
 }
 
 // Helper function to create HTML elements
@@ -91,61 +91,55 @@ function buildHTML(tag, classes, text){
     return element;
 }
 
-// Function to call the current weather data (currently in metric), with the argument for the city
-function callWeather(city){
-    let calledWeatherData = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=704f3b5ee25c5694ae0db66afd13ab60&units=metric`
-    fetch(calledWeatherData)
-        .then((response) => { 
-            if (response.ok === true){
-                return response.json();
-            } else {
-                alert("Error! Could not retrieve city forecast data.");
-            }
-        })
-        .then((data) => {
-            return retrievedCityData = data;
-        })
-        .catch((error) => {
-            alert("Error! Could not connect to OpenWeatherMap API.");
-        });
+// Helper function to remove HTML elements
+function removeHTML(query){
+    let element = document.querySelector(query);
+    while (element.firstChild){
+        element.removeChild(element.firstChild);
+    }
 }
 
-// Function to call the current 5 day forecast with argument for the city
-function callForecast(city){
-    let calledForecast = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=704f3b5ee25c5694ae0db66afd13ab60&cnt=40&units=metric`
-    fetch(calledForecast)
-    .then((response) => { 
-        if (response.ok === true){
-            return response.json();
-        } else {
-            alert("Error! Could not retrieve city data.");
-        }
-    })
-    .then((data) => {
-        return retrievedForecastData = data;
-    })
-    .catch((error) => {
-        alert("Error! Could not connect to OpenWeatherMap API.");
-    });
+// Async function to fetch all the weather data we need
+async function callWeather(city){
+    // Fetch Current Weather API
+    let currentWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=704f3b5ee25c5694ae0db66afd13ab60&units=metric`);
+    let weatherJSON = await currentWeatherData.json();
+
+    // Get longitude and latitude from Current Weather API, and feed it into the One Call API for daily forecasts, and UV Index
+    let lattitude = weatherJSON.coord.lat;
+    let longitude = weatherJSON.coord.lon;
+
+    // Fetch One Call API, using lattitude and longitude from Current Weather API
+    let oneCallAPI = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lattitude}&lon=${longitude}&units=metric&exclude=current,minutely,hourly,alerts&appid=704f3b5ee25c5694ae0db66afd13ab60`)
+    let oneCallJSON = await oneCallAPI.json();
+
+    // Build Object with all the data we need for our app
+    requestedWeatherData = {
+        cityName: weatherJSON.name,
+        currentDate: new Date(weatherJSON.dt*1000),
+        currentTemp: `${weatherJSON.main.temp} C`,
+        currentHumidity: `${weatherJSON.main.humidity}%`,
+        currentWind: `${weatherJSON.wind.speed} km/h`,
+        currentUVI: oneCallJSON.daily[0].uvi,
+        dailyForecast: oneCallJSON.daily // Don't forget 0 is today!
+    }
 }
 
 // Function to search for a city and add it to the search history
-function searchCity(){
+async function searchCity(){
     let searchValue = searchFieldEl.value;
-    callWeather(searchValue);
-    callForecast(searchValue);
+    await callWeather(searchValue);
     buildSearchHistory(searchValue);
-    // buildWeatherMain();
-    // buildForecast();
+    buildWeatherMain();
+    buildForecast();
     searchFieldEl.value = "";
 }
 
 // Event Listener for the search button
-searchButtonEl.addEventListener("click", searchCity);
+searchButtonEl.addEventListener("click", ()=>{
+    removeHTML(".current-weather");
+    searchCity();
+});
 
 // TO DO
-// Build search history functionality (delete search history items)
-// Populate the built out weather and forecast elements with the weather API object info
-    // Issues with chaining the buildWeatherMain() and buildForecast() functions together- need to take a look
-    // Need to grab UV Index from another API, apparently
 // Build out functionality for imperial and metric measurements??
