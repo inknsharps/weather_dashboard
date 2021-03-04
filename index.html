@@ -23,12 +23,12 @@
          <!-- Search bar column -->
         <aside class="d-flex flex-column col-3">
             <section>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control search-field" placeholder="City or ZIP Code" aria-label="City or ZIP Code" aria-describedby="button-addon2">
+                <form class="input-group mb-3">
+                    <input type="text" class="form-control search-field" placeholder="City Name" aria-label="City Name" aria-describedby="City Name">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary submit-search" type="button" id="button-addon2">Search</button>
+                        <button class="btn btn-outline-secondary submit-search" type="submit" value="Submit">Search</button>
                     </div>
-                </div>
+                </form>
                 <!-- Saved Cities Field -->
                 <ul class="list-group search-history">
                 </ul>
@@ -36,38 +36,6 @@
         </aside>
         <!-- City info section -->
         <article class="d-flex flex-wrap col-9 current-weather">
-            <!-- <section class="col-12 selected-city">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title">Atlanta (03/02/21)</h3>
-                        <p>Temperature Here</p>
-                        <p>Wind Speed Here</p>
-                        <p>UV Index Here</p>
-                    </div>
-                </div>
-            </section> -->
-            <!-- 5 Day Forecast Section -->
-            <!-- <section class="d-flex col-12 flex-wrap forecast">
-                <div class="col-12">
-                    <h3>5 Day Forecast</h3>
-                </div>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">03/02/2021</h5>
-                        <p>Weather Image Here</p>
-                        <p>Temperature Here</p>
-                        <p>Humidity Here</p>
-                    </div>
-                </div>
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">03/02/2021</h5>
-                        <p>Weather Image Here</p>
-                        <p>Temperature Here</p>
-                        <p>Humidity Here</p>
-                    </div>
-                </div>
-            </section> -->
         </article>
     </main>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

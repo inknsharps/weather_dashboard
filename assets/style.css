@@ -1,0 +1,14 @@
+.UVindex-low {
+    color: white;
+    background-color: green;
+}
+
+.UVindex-med {
+    color: white;
+    background-color: orange;
+}
+
+.UVindex-high {
+    color: white;
+    background-color: red;
+}

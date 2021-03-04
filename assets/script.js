@@ -102,7 +102,13 @@ function buildWeatherMain(){
     cardBody.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.currentTemp}`));
     cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.currentHumidity}`));
     cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${requestedWeatherData.currentWind}`));
-    cardBody.appendChild(buildHTML("p", "UVindex", `UV Index: ${requestedWeatherData.currentUVI}`));
+    if (requestedWeatherData.currentUVI <= 3){
+        cardBody.appendChild(buildHTML("p", "UVindex-low p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
+    } else if (requestedWeatherData.currentUVI >= 3 && requestedWeatherData.currentUVI <= 7) {
+        cardBody.appendChild(buildHTML("p", "UVindex-med p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
+    } else {
+        cardBody.appendChild(buildHTML("p", "UVindex-high p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
+    }
 }
 
 // Helper function to create HTML elements
@@ -201,14 +207,15 @@ if (localStorage.searchHistoryElements === undefined && localStorage.currentWeat
 }
 
 // Event Listener for searching, which replaces the current city data with what is searched
-searchButtonEl.addEventListener("click", ()=>{
+searchButtonEl.addEventListener("click", (event)=>{
+    event.preventDefault();
     removeHTML(".current-weather");
     searchCity();
 });
+
 // Event listeners for the navbar save history and current city buttons
 saveHistoryButtonEl.addEventListener("click", storeHistory);
 saveCityButtonEl.addEventListener("click", storeCurrentCity);
 
 // TO DO
-// Add UV index styling
 // Build out functionality for imperial and metric measurements??
