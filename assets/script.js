@@ -5,6 +5,7 @@ let searchHistoryEl = document.querySelector(".search-history");
 let currentWeatherEl = document.querySelector(".current-weather");
 let saveHistoryButtonEl = document.querySelector(".save-history");
 let saveCityButtonEl = document.querySelector(".save-city");
+let clearButtonEl = document.querySelector(".clear-data");
 
 // Declare variables for current weather and forecast data objects to be manipulated later
 let requestedWeatherData;
@@ -216,6 +217,16 @@ searchButtonEl.addEventListener("click", (event)=>{
 // Event listeners for the navbar save history and current city buttons
 saveHistoryButtonEl.addEventListener("click", storeHistory);
 saveCityButtonEl.addEventListener("click", storeCurrentCity);
+clearButtonEl.addEventListener("click", () => {
+    let prompt = confirm("This will clear all saved cities current weather! Continue?");
+    if (prompt === false){
+        return;
+    } else {
+        removeHTML(".current-weather");
+        removeHTML(".search-history");
+        localStorage.clear();
+    }
+})
 
 // TO DO
 // Build out functionality for imperial and metric measurements??
