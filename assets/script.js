@@ -3,6 +3,8 @@ let searchFieldEl = document.querySelector(".search-field");
 let searchButtonEl = document.querySelector(".submit-search");
 let searchHistoryEl = document.querySelector(".search-history");
 let currentWeatherEl = document.querySelector(".current-weather");
+let saveHistoryButtonEl = document.querySelector(".save-history");
+let saveCityButtonEl = document.querySelector(".save-city");
 
 // Declare variables for current weather and forecast data objects to be manipulated later
 let requestedWeatherData;
@@ -51,7 +53,7 @@ function buildForecast(){
     let forecastHeader = buildHTML("div", "col-12");
     forecast.appendChild(forecastHeader);
     forecastHeader.appendChild(buildHTML("h4", "forecast-title", "5-Day Forecast:"));
-    for (let i = 0; i < 5; i++){
+    for (let i = 1; i < 6; i++){
         let forecastCard = buildHTML("div", "card");
         forecastCard.setAttribute("style", "width: 15rem;");
         forecast.appendChild(forecastCard);
@@ -135,11 +137,64 @@ async function searchCity(){
     searchFieldEl.value = "";
 }
 
-// Event Listener for the search button
+// Function to save search history elements to localStorage
+function storeHistory(){
+    console.log(searchHistoryEl.innerHTML);
+    localStorage.setItem("searchHistoryElements", JSON.stringify(searchHistoryEl.innerHTML));
+    console.log(localStorage);
+}
+
+// Function to reload save search history elements from localStorage
+function restoreHistory(){
+    searchHistoryEl.innerHTML = JSON.parse(localStorage.getItem("searchHistoryElements"));
+    let closeButton = document.querySelectorAll(".close");
+    let cityButton = document.querySelectorAll(".submit-saved-city");
+    console.log(searchHistoryEl.childElementCount);
+    for (let i = 0; i < searchHistoryEl.childElementCount; i++){
+        cityButton[i].addEventListener("click", callHistory);
+        closeButton[i].addEventListener("click", deleteHistory);
+    }
+}
+
+// Function to save current city weather elements to localStorage
+function storeCurrentCity(){
+    console.log(currentWeatherEl.innerHTML);
+    localStorage.setItem("currentWeatherElements", JSON.stringify(currentWeatherEl.innerHTML));
+    console.log(localStorage);
+}
+
+// Function to reload save search history elements from localStorage
+async function restoreCurrentCity(){
+    currentWeatherEl.innerHTML = await JSON.parse(localStorage.getItem("currentWeatherElements"));
+    let currentCityValue = currentWeatherEl.firstElementChild.firstElementChild.firstElementChild.firstElementChild.textContent
+    await callWeather(currentCityValue);
+    removeHTML(".current-weather");
+    buildWeatherMain();
+    buildForecast();
+}
+
+if (localStorage.searchHistoryElements === undefined && localStorage.currentWeatherElements === undefined){
+    console.log("meh");
+} else {
+    restoreHistory();
+    restoreCurrentCity();
+}
+
+// Event Listener for searching
 searchButtonEl.addEventListener("click", ()=>{
     removeHTML(".current-weather");
     searchCity();
 });
 
+saveHistoryButtonEl.addEventListener("click", ()=>{
+    storeHistory();
+});
+
+saveCityButtonEl.addEventListener("click", ()=>{
+    storeCurrentCity();
+});
+
 // TO DO
+// Add UV index styling
+// Add weather icons
 // Build out functionality for imperial and metric measurements??
