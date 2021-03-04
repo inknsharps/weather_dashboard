@@ -13,18 +13,21 @@ let requestedWeatherData;
 function buildSearchHistory(city){
     let li = document.createElement("li");
     li.className = "list-group-item city-li";
+
     let cityButton = document.createElement("button");
     cityButton.className = "btn btn-outline-secondary submit-saved-city";
     cityButton.setAttribute("type", "button");
     cityButton.textContent = city;
+    
     let closeButton = document.createElement("button");
     closeButton.className = "close";
     closeButton.setAttribute("type", "button");
     closeButton.innerHTML = "<span aria-hidden='true'>&times;</span>";
-
+    
     li.appendChild(cityButton);
     li.appendChild(closeButton);
     searchHistoryEl.appendChild(li);
+    
     cityButton.addEventListener("click", callHistory);
     closeButton.addEventListener("click", deleteHistory);
 }
@@ -48,22 +51,29 @@ function deleteHistory(event){
 
 // Function to build the 5 day forecast (NOTE: the daily forecast API is not free, so had to use the 5 day/3 Hour forecast API, hence the weird for loop)
 function buildForecast(){
-    let forecast = buildHTML("section", "d-flex col-12 flex-wrap forecast");
+    let forecast = buildHTML("section", "d-flex col-12 flex-wrap mt-5 forecast");
     currentWeatherEl.appendChild(forecast);
+
     let forecastHeader = buildHTML("div", "col-12");
     forecast.appendChild(forecastHeader);
     forecastHeader.appendChild(buildHTML("h4", "forecast-title", "5-Day Forecast:"));
+    
     for (let i = 1; i < 6; i++){
-        let forecastCard = buildHTML("div", "card");
+        let forecastCard = buildHTML("div", "card d-flex flex-column align-items-center m-2");
         forecastCard.setAttribute("style", "width: 15rem;");
         forecast.appendChild(forecastCard);
 
         // Convert the Unix timestamps in requestedWeatherData to YYYY-MM-DD
         let forecastDateRaw = new Date(requestedWeatherData.dailyForecast[i].dt*1000);
-        let forecastDate = forecastDateRaw.toLocaleDateString("en-CA");
+        let forecastDate = forecastDateRaw.toLocaleDateString("en");
 
         forecastCard.appendChild(buildHTML("h5", "card-title", forecastDate));
-        forecastCard.appendChild(buildHTML("p", "weather-img", requestedWeatherData.dailyForecast[i].weather.icon));
+        
+        let weatherIcon = `http://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[i].weather[0].icon}@2x.png`
+        let weatherIconEl = buildHTML("img", "col-4 weather-img");
+        weatherIconEl.setAttribute("src", weatherIcon);
+        forecastCard.appendChild(weatherIconEl);
+
         forecastCard.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.dailyForecast[i].temp.day} C`));
         forecastCard.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.dailyForecast[i].humidity}%`));
     }
@@ -75,10 +85,20 @@ function buildWeatherMain(){
     currentWeatherEl.appendChild(selectedCity);
     let card = buildHTML("div", "card");
     selectedCity.appendChild(card);
-    let cardBody = buildHTML("div", "card-body");
+    let cardBody = buildHTML("div", "card-body d-flex flex-column align-items-center");
     card.appendChild(cardBody);
 
-    cardBody.appendChild(buildHTML("h3", "card-title", `${requestedWeatherData.cityName}`));
+    cardBody.appendChild(buildHTML("h2", "card-title", `${requestedWeatherData.cityName}`));
+
+    let currentDateRaw = new Date(requestedWeatherData.dailyForecast[0].dt*1000);
+    let currentDate = currentDateRaw.toLocaleDateString("en");
+    cardBody.appendChild(buildHTML("h5", "current-date", `${currentDate}`));
+
+    let weatherIcon = `http://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[0].weather[0].icon}@2x.png`
+    let weatherIconEl = buildHTML("img", "col-1 weather-img");
+    weatherIconEl.setAttribute("src", weatherIcon);
+    cardBody.appendChild(weatherIconEl);
+
     cardBody.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.currentTemp}`));
     cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.currentHumidity}`));
     cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${requestedWeatherData.currentWind}`));
@@ -123,7 +143,7 @@ async function callWeather(city){
         currentHumidity: `${weatherJSON.main.humidity}%`,
         currentWind: `${weatherJSON.wind.speed} km/h`,
         currentUVI: oneCallJSON.daily[0].uvi,
-        dailyForecast: oneCallJSON.daily // Don't forget 0 is today!
+        dailyForecast: oneCallJSON.daily // Don't forget index 0 is today!
     }
 }
 
@@ -143,9 +163,7 @@ async function searchCity(){
 
 // Function to save search history elements to localStorage
 function storeHistory(){
-    console.log(searchHistoryEl.innerHTML);
     localStorage.setItem("searchHistoryElements", JSON.stringify(searchHistoryEl.innerHTML));
-    console.log(localStorage);
 }
 
 // Function to reload save search history elements from localStorage
@@ -161,9 +179,7 @@ function restoreHistory(){
 
 // Function to save current city weather elements to localStorage
 function storeCurrentCity(){
-    console.log(currentWeatherEl.innerHTML);
     localStorage.setItem("currentWeatherElements", JSON.stringify(currentWeatherEl.innerHTML));
-    console.log(localStorage);
 }
 
 // Async function to reload saved city weather elements from localStorage, then refreshes it with current data
@@ -176,6 +192,7 @@ async function restoreCurrentCity(){
     buildForecast();
 }
 
+// localStorage checks upon page load, if valid key-value pairs exist, load them to the page
 if (localStorage.searchHistoryElements === undefined && localStorage.currentWeatherElements === undefined){
     console.log("Nothing in localStorage!");
 } else {
@@ -194,5 +211,4 @@ saveCityButtonEl.addEventListener("click", storeCurrentCity);
 
 // TO DO
 // Add UV index styling
-// Add weather icons
 // Build out functionality for imperial and metric measurements??
