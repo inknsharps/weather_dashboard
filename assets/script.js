@@ -203,8 +203,12 @@ async function restoreCurrentCity(){
 if (localStorage.searchHistoryElements === undefined && localStorage.currentWeatherElements === undefined){
     console.log("Nothing in localStorage!");
 } else {
-    restoreHistory();
+    if (localStorage.searchHistoryElements){
+        restoreHistory();
+    }
+    if (localStorage.currentWeatherElements){
     restoreCurrentCity();
+    }
 }
 
 // Event Listener for searching, which replaces the current city data with what is searched
