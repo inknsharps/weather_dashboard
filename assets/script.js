@@ -6,6 +6,7 @@ let currentWeatherEl = document.querySelector(".current-weather");
 let saveHistoryButtonEl = document.querySelector(".save-history");
 let saveCityButtonEl = document.querySelector(".save-city");
 let clearButtonEl = document.querySelector(".clear-data");
+const apiKey = "382ab0329e2b3dab9dfe179c3239bea9";
 
 // Declare variables for current weather and forecast data objects to be manipulated later
 let requestedWeatherData;
