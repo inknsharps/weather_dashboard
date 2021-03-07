@@ -131,7 +131,7 @@ function removeHTML(query){
 // Async function to fetch all the weather data we need
 async function callWeather(city){
     // Fetch Current Weather API
-    let currentWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=704f3b5ee25c5694ae0db66afd13ab60&units=metric`);
+    let currentWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
     let weatherJSON = await currentWeatherData.json();
 
     // Get longitude and latitude from Current Weather API, and feed it into the One Call API for daily forecasts, and UV Index
@@ -139,7 +139,7 @@ async function callWeather(city){
     let longitude = weatherJSON.coord.lon;
 
     // Fetch One Call API, using lattitude and longitude from Current Weather API
-    let oneCallAPI = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lattitude}&lon=${longitude}&units=metric&exclude=current,minutely,hourly,alerts&appid=704f3b5ee25c5694ae0db66afd13ab60`)
+    let oneCallAPI = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lattitude}&lon=${longitude}&units=metric&exclude=current,minutely,hourly,alerts&appid=${apiKey}`)
     let oneCallJSON = await oneCallAPI.json();
 
     // Build Object with all the data we need for our app
