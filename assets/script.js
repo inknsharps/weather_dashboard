@@ -14,15 +14,15 @@ let requestedWeatherData;
 // Function to build li elements for the search history, with buttons for functionality
 function buildSearchHistory(city){
     let li = document.createElement("li");
-    li.className = "list-group-item city-li";
+    li.className = "list-group-item d-flex justify-content-between city-li";
 
     let cityButton = document.createElement("button");
-    cityButton.className = "btn btn-outline-secondary submit-saved-city";
+    cityButton.className = "btn btn-secondary submit-saved-city";
     cityButton.setAttribute("type", "button");
     cityButton.textContent = city;
     
     let closeButton = document.createElement("button");
-    closeButton.className = "close";
+    closeButton.className = "close btn";
     closeButton.setAttribute("type", "button");
     closeButton.innerHTML = "<span aria-hidden='true'>&times;</span>";
     
@@ -53,7 +53,7 @@ function deleteHistory(event){
 
 // Function to build the 5 day forecast (NOTE: the daily forecast API is not free, so had to use the 5 day/3 Hour forecast API, hence the weird for loop)
 function buildForecast(){
-    let forecast = buildHTML("section", "d-flex col-12 flex-wrap mt-5 forecast");
+    let forecast = buildHTML("section", "d-flex col-12 flex-wrap justify-content-center mt-5 forecast");
     currentWeatherEl.appendChild(forecast);
 
     let forecastHeader = buildHTML("div", "col-12");
@@ -71,7 +71,7 @@ function buildForecast(){
 
         forecastCard.appendChild(buildHTML("h5", "card-title", forecastDate));
         
-        let weatherIcon = `http://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[i].weather[0].icon}@2x.png`
+        let weatherIcon = `https://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[i].weather[0].icon}@2x.png`
         let weatherIconEl = buildHTML("img", "col-4 weather-img");
         weatherIconEl.setAttribute("src", weatherIcon);
         forecastCard.appendChild(weatherIconEl);
@@ -83,7 +83,7 @@ function buildForecast(){
 
 // Function to build current city weather data card
 function buildWeatherMain(){
-    let selectedCity = buildHTML("section", "col-12 selected-city");
+    let selectedCity = buildHTML("section", "col-12 col-lg-5 selected-city");
     currentWeatherEl.appendChild(selectedCity);
     let card = buildHTML("div", "card");
     selectedCity.appendChild(card);
@@ -96,7 +96,7 @@ function buildWeatherMain(){
     let currentDate = currentDateRaw.toLocaleDateString("en");
     cardBody.appendChild(buildHTML("h5", "current-date", `${currentDate}`));
 
-    let weatherIcon = `http://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[0].weather[0].icon}@2x.png`
+    let weatherIcon = `https://openweathermap.org/img/wn/${requestedWeatherData.dailyForecast[0].weather[0].icon}@2x.png`
     let weatherIconEl = buildHTML("img", "col-1 weather-img");
     weatherIconEl.setAttribute("src", weatherIcon);
     cardBody.appendChild(weatherIconEl);

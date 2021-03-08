@@ -1,3 +1,47 @@
+:root {
+    --primarybg: #92929296;
+    --secondarybg: #7e7e7ea1;
+}
+
+body {
+    background-image: url("https://picsum.photos/id/1064/3936/2624");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.navbar {
+    color: #ffffff;
+    background-color: var(--primarybg);
+}
+
+.btn-primary {
+    background-color: #4154b4;
+    border-color: #4154b4;
+}
+
+.btn-danger {
+    background-color: #b44141;
+    border-color: #b44141;
+}
+
+.city-li {
+    background-color: var(--primarybg);
+    transition: background-color 1s;
+}
+
+.city-li:hover {
+    background-color: #cecece96;
+}
+
+.close {
+    border: none;
+}
+
+.card {
+    background-color: var(--secondarybg);
+    color: #ffffff;
+}
+
 .UVindex-low {
     color: white;
     background-color: green;
@@ -11,4 +55,14 @@
 .UVindex-high {
     color: white;
     background-color: red;
+}
+
+.forecast {
+    background-color: var(--primarybg);
+    padding: 1vh;
+    border-radius: 10px;    
+}
+
+.forecast-title {
+    color: #ffffff;
 }
