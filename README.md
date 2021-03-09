@@ -1,6 +1,7 @@
 # Weather Dashboard
 
 This is a weather dashboard web application that lets you search by city name, save a list of cities, and set a city to display weather upon loading.
+A deployed version can be accessed <a href="https://inknsharps.github.io/weather_dashboard/">here</a>.
 
 ## Features
 
