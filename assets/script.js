@@ -11,21 +11,23 @@ const apiKey = "382ab0329e2b3dab9dfe179c3239bea9";
 // Declare variables for current weather and forecast data objects to be manipulated later
 let requestedWeatherData;
 
+// Function to build button HTML elements, and returns it
+function buildButton(tag, classes, attributeName, attributeValue, text){
+    let button = document.createElement(tag);
+    button.className = classes;
+    button.setAttribute(attributeName, attributeValue);
+    button.innerHTML = text;
+    return button;
+}
+
 // Function to build li elements for the search history, with buttons for functionality
 function buildSearchHistory(city){
     let li = document.createElement("li");
     li.className = "list-group-item d-flex justify-content-between city-li";
 
-    let cityButton = document.createElement("button");
-    cityButton.className = "btn btn-secondary submit-saved-city";
-    cityButton.setAttribute("type", "button");
-    cityButton.textContent = city;
-    
-    let closeButton = document.createElement("button");
-    closeButton.className = "close btn";
-    closeButton.setAttribute("type", "button");
-    closeButton.innerHTML = "<span aria-hidden='true'>&times;</span>";
-    
+    let cityButton = buildButton("button", "btn btn-secondary submit-saved-city", "type", "button", city);
+    let closeButton = buildButton("button", "close btn", "type", "button", "<span aria-hidden='true'>&times;</span>");
+
     li.appendChild(cityButton);
     li.appendChild(closeButton);
     searchHistoryEl.appendChild(li);
@@ -51,7 +53,7 @@ function deleteHistory(event){
     cityLiEl.parentElement.parentElement.remove();
 }
 
-// Function to build the 5 day forecast (NOTE: the daily forecast API is not free, so had to use the 5 day/3 Hour forecast API, hence the weird for loop)
+// Function to build the 5 day forecast
 function buildForecast(){
     let forecast = buildHTML("section", "d-flex col-12 flex-wrap justify-content-center mt-5 forecast");
     currentWeatherEl.appendChild(forecast);
@@ -104,6 +106,7 @@ function buildWeatherMain(){
     cardBody.appendChild(buildHTML("p", "temperature", `Temperature: ${requestedWeatherData.currentTemp}`));
     cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.currentHumidity}`));
     cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${requestedWeatherData.currentWind}`));
+
     if (requestedWeatherData.currentUVI <= 3){
         cardBody.appendChild(buildHTML("p", "UVindex-low p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
     } else if (requestedWeatherData.currentUVI >= 3 && requestedWeatherData.currentUVI <= 7) {
@@ -231,7 +234,4 @@ clearButtonEl.addEventListener("click", () => {
         removeHTML(".search-history");
         localStorage.clear();
     }
-})
-
-// TO DO
-// Build out functionality for imperial and metric measurements??
+});
