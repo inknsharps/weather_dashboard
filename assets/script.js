@@ -107,13 +107,8 @@ function buildWeatherMain(){
     cardBody.appendChild(buildHTML("p", "humidity", `Humidity: ${requestedWeatherData.currentHumidity}`));
     cardBody.appendChild(buildHTML("p", "windspeed", `Wind Speed: ${requestedWeatherData.currentWind}`));
 
-    if (requestedWeatherData.currentUVI <= 3){
-        cardBody.appendChild(buildHTML("p", "UVindex-low p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
-    } else if (requestedWeatherData.currentUVI >= 3 && requestedWeatherData.currentUVI <= 7) {
-        cardBody.appendChild(buildHTML("p", "UVindex-med p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
-    } else {
-        cardBody.appendChild(buildHTML("p", "UVindex-high p-2", `UV Index: ${requestedWeatherData.currentUVI}`));
-    }
+    let uvClass = requestedWeatherData.currentUVI <= 3 ? "UVindex-low p-2" : requestedWeatherData.currentUVI <= 7 ? "UVindex-med p-2" : "UVindex-high p-2";
+    cardBody.appendChild(buildHTML("p", uvClass, `UV Index: ${requestedWeatherData.currentUVI}`));
 }
 
 // Helper function to create HTML elements
