@@ -5,11 +5,20 @@ A deployed version can be accessed <a href="https://inknsharps.github.io/weather
 
 ## Features
 
-* Search for cities by name, and display current weather and a 5 day forecast.
+* Search for cities by name (an optional country code can be included), and display current weather and a 5 day forecast.
 * Dynamic colouring to display the current UV Index.
 * Weather condition icons.
 * Save a list of cities that you have searched for to `localStorage`, and pull up weather data for those cities when saved.
 * Set a current city to `localStorage`, and upon reload displays up to date weather.
+
+## Demos
+
+### Search for cities and display current weather and forecast
+<img src="./assets/img/currentweather+forecast.gif">
+
+### Save current city list and current city weather data to localStorage
+<img src="./assets/img/localstorage_functionality.gif">
+
 
 ## Credits
 ### APIs Used
